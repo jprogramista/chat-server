@@ -1,4 +1,4 @@
-# Private chat between users
+# Private chats between users an open rooms for all 
 
 `mvn clean package && java -Dserver.port=9090 -jar target/chat-server-0.1.0.jar`
 

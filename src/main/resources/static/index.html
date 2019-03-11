@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html>
-  <head>
+<head>
     <title>WebSocket Chat</title>
     <link href="/webjars/bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <link href="/main.css" rel="stylesheet">
@@ -8,53 +8,55 @@
     <script src="/webjars/sockjs-client/sockjs.min.js"></script>
     <script src="/webjars/stomp-websocket/stomp.min.js"></script>
     <script src="/chat.js"></script>
-  </head>
+</head>
 <body>
-  <div id="main-content" class="container">
+<div id="main-content" class="container">
     <div class="row">
-      <div class="col-md-12 space-bottom10">
-        <form class="form-inline">
-          <div class="form-group">
-                <label for="to">Recipient?</label>
-                <input type="text" id="to" class="form-control" placeholder="enter recipient name...">
-          </div>
-            
-          <button id="connect" class="btn btn-default" type="submit">Connect</button>
-          <button id="disconnect" class="btn btn-default" type="submit" disabled="disabled">Disconnect</button>
-	    </form>
-      </div>
+        <div class="col-md-12 space-bottom10">
+            <form class="form-inline">
+                <button id="connect" class="btn btn-default" type="submit">Connect</button>
+                <button id="disconnect" class="btn btn-default" type="submit" disabled="disabled">Disconnect</button>
+            </form>
+        </div>
     </div>
     <div class="row space-bottom10">
-      <form>
-        <div class="col-md-6">
-          <input type="text"
-             id="text"
-             class="form-control"
-             placeholder="enter message ...">
-        </div>
-        <div class="col-md-4">
-              <button id="send"
-              class="btn btn-default"
-              type="submit">Send</button>
-        </div>
-      </form>
+        <form>
+            <div class="form-group">
+                <label for="to">Recipient?</label>
+                <input type="text" id="to" class="form-control" placeholder="enter recipient name...">
+            </div>
+            <div class="form-group">
+                <select id="roomId" name="roomId" class="form-control">
+                    <option value="room1">Room 1</option>
+                    <option value="room2">Room 2</option>
+                    <option value="room3">Room 3</option>
+                </select>
+            </div>
+            <div class="col-md-6">
+                <input type="text" id="text" class="form-control" placeholder="enter message ...">
+            </div>
+            <div class="col-md-4">
+                <button id="send" class="btn btn-default" type="submit">Send to User</button>
+                <button id="sendRoom" class="btn btn-default" type="submit">Send to Room</button>
+            </div>
+        </form>
     </div>
     <div class="row">
-      <div class="col-md-12">
-        <table id="conversation" class="table table-striped">
-          <thead>
-            <tr>
-	      <th width="10%">From</th>
-              <th width="15%">Topic</th>
-	      <th width="60%">Message</th>
-	      <th width="10%">Time</th>
-            </tr>
-          </thead>
-          <tbody id="messages">
-          </tbody>
-        </table>
-      </div>
+        <div class="col-md-12">
+            <table id="conversation" class="table table-striped">
+                <thead>
+                <tr>
+                    <th width="10%">From</th>
+                    <th width="15%">Recipient</th>
+                    <th width="60%">Message</th>
+                    <th width="10%">Time</th>
+                </tr>
+                </thead>
+                <tbody id="messages">
+                </tbody>
+            </table>
+        </div>
     </div>
-  </div>
+</div>
 </body>
 </html>

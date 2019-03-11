@@ -1,9 +1,11 @@
 package sample.web;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
+import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 import sample.model.Message;
@@ -38,5 +40,12 @@ public class ChatController
                     new Message("system", user.getName(), "Recipient not connected"));
         }
         //simpMessagingTemplate.convertAndSendToUser(message.getTo(), "/conversation", message);
+    }
+
+    @MessageMapping("/room/send/{roomId}")
+    public void sentToRoom(@DestinationVariable String roomId, @Payload Message message, Principal user) {
+        message.setFrom(user.getName());
+        message.setTo(roomId);
+        simpMessagingTemplate.convertAndSend("/room/" + roomId, message);
     }
 }

@@ -47,6 +47,12 @@ $(function() {
 			client.subscribe('/conversation/user-' + session, function (message) {
 				showMessage(JSON.parse(message.body));
 			});
+			var rooms = ['room1', 'room2', 'room3'];
+			rooms.forEach(function (value) {
+				client.subscribe('/room/' + value, function (message) {
+					showMessage(JSON.parse(message.body));
+				});
+			});
 		});
 	});
 
@@ -67,4 +73,11 @@ $(function() {
 			$('#text').val("");
 		}
     });
+
+	$('#sendRoom').click(function() {
+		client.send("/app/room/send/" + $('#roomId').val(), {}, JSON.stringify({
+			text: $('#text').val(),
+		}));
+		$('#text').val("");
+	});
 });
