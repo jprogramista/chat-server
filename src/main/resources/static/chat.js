@@ -40,20 +40,24 @@ $(function() {
     $('#disconnect, #text').prop('disabled', true);
 
 	$('#connect').click(function() {
-		client = Stomp.over(new SockJS('/chat'));
-		client.connect({}, function (frame) {
-			setConnected(true);
-			var session = getSession(client);
-			client.subscribe('/conversation/user-' + session, function (message) {
-				showMessage(JSON.parse(message.body));
-			});
-			var rooms = ['room1', 'room2', 'room3'];
-			rooms.forEach(function (value) {
-				client.subscribe('/room/' + value, function (message) {
-					showMessage(JSON.parse(message.body));
+		if ($('#username').val()) {
+			client = Stomp.over(new SockJS('http://localhost:9090/chat'));
+			client.connect({}, function (frame) {
+				var session = getSession(client);
+				$.get('http://localhost:9090/register?username=' + $('#username').val() + '&sessionId=' + session, function () {
+					setConnected(true);
+					client.subscribe('/conversation/user-' + session, function (message) {
+						showMessage(JSON.parse(message.body));
+					});
+					var rooms = ['room1', 'room2', 'room3'];
+					rooms.forEach(function (value) {
+						client.subscribe('/room/' + value, function (message) {
+							showMessage(JSON.parse(message.body));
+						});
+					});
 				});
 			});
-		});
+		}
 	});
 
     $('#disconnect').click(function() {

@@ -1,14 +1,19 @@
 package sample.listeners;
 
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
+import com.google.common.collect.Maps;
 import org.springframework.stereotype.Component;
 
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 @Component
 public class WsSessions {
 
-    private ConcurrentMap<String, String> map = new ConcurrentHashMap<>();
+    private BiMap<String, String> map =  Maps.synchronizedBiMap(HashBiMap.create());
 
     public void put(String key, String value) {
         map.putIfAbsent(key, value);
@@ -22,4 +27,8 @@ public class WsSessions {
         return map.get(key);
     }
 
+    public String getByValue(String value) {
+        return map.inverse().get(value);
+    }
+    
 }
