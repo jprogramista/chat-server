@@ -8,10 +8,15 @@ import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import sample.model.Message;
 import sample.listeners.WsSessions;
+import sample.service.ChatHistoryService;
 
 import java.security.Principal;
+import java.util.List;
 
 import static java.util.Objects.nonNull;
 
@@ -19,12 +24,17 @@ import static java.util.Objects.nonNull;
 public class ChatController 
 {
     
-    @Autowired
-    private SimpMessagingTemplate simpMessagingTemplate;
+    private final SimpMessagingTemplate simpMessagingTemplate;
 
-    @Autowired
-    private WsSessions userSessions;
+    private final WsSessions userSessions;
     
+    private final ChatHistoryService chatHistoryService;
+
+    public ChatController(SimpMessagingTemplate simpMessagingTemplate, WsSessions userSessions, ChatHistoryService chatHistoryService) {
+        this.simpMessagingTemplate = simpMessagingTemplate;
+        this.userSessions = userSessions;
+        this.chatHistoryService = chatHistoryService;
+    }
 
     @MessageMapping("/chat/user")
     public void sendTo(@Payload Message message, Principal user, @Header("simpSessionId") String sessionId) throws Exception {
@@ -35,6 +45,7 @@ public class ChatController
         if (nonNull(session)) {
             message.setFrom(user.getName());
             simpMessagingTemplate.convertAndSend("/conversation/user-" + session, message);
+            chatHistoryService.addMessage(message);
         } else {
             simpMessagingTemplate.convertAndSend("/conversation/user-" + sessionId, 
                     new Message("system", user.getName(), "Recipient not connected"));
@@ -48,4 +59,10 @@ public class ChatController
         message.setTo(roomId);
         simpMessagingTemplate.convertAndSend("/room/" + roomId, message);
     }
+    
+    @GetMapping("/history")
+    public @ResponseBody List<Message> getHistory(@RequestParam String recipient, Principal user) {
+        return chatHistoryService.getHistory(user.getName(), recipient);        
+    } 
+    
 }

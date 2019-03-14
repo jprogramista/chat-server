@@ -4,4 +4,6 @@
 
 Connect to the web client at: http:://localhost:9090/.
 
+History endpoint http:://localhost:9090/history?recipient=...
+
 Inspired by: [https://github.com/jaysridhar/spring-websocket-server].
